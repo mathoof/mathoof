@@ -1,7 +1,11 @@
-module Main where
+module Main (main) where
 
+import Parser
 import Intro
+
+
+
 main :: IO ()
-main = do
+main =  do
   content <- getContents
-  mapM_ (print . simplify . defaultParser) $ lines content
+  mapM_ (print . runParser expression) $ lines content
