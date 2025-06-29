@@ -1,16 +1,17 @@
 {-# LANGUAGE GADTs #-}
+
 module Intro (Expression (..), expression) where
 
 import Control.Applicative
 import Data.Char
 import Parser
 
-data Expression  where
-  Var :: String -> Expression
-  Constant :: Int -> Expression
-  Add :: Expression -> Expression -> Expression
-  Mul :: Expression -> Expression -> Expression
-  deriving (Show, Eq)
+data Expression where
+    Var :: String -> Expression
+    Constant :: Int -> Expression
+    Add :: Expression -> Expression -> Expression
+    Mul :: Expression -> Expression -> Expression
+    deriving (Show, Eq)
 
 expression :: Parser Expression
 expression = addP <|> productP
@@ -22,11 +23,11 @@ expression = addP <|> productP
     varP = Var <$> notNullP (spanP isAlphaNum)
     numberP = spanP isDigit
     mulStarP =
-      Mul
-        <$> atomP
-        <*> (wsP *> charP '*' *> wsP *> productP)
+        Mul
+            <$> atomP
+            <*> (wsP *> charP '*' *> wsP *> productP)
     mulP = Mul <$> atomP <*> (wsP *> productP)
     addP =
-      Add
-        <$> productP
-        <*> (wsP *> charP '+' *> wsP *> expression)
+        Add
+            <$> productP
+            <*> (wsP *> charP '+' *> wsP *> expression)
