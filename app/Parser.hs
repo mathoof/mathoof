@@ -1,6 +1,15 @@
 {-# LANGUAGE GADTs #-}
 
-module Parser (Parser (..), charP, stringP, spanP, notNullP, wsP) where
+module Parser
+  ( Parser (..),
+    parse,
+    charP,
+    stringP,
+    spanP,
+    notNullP,
+    wsP,
+  )
+where
 
 import Control.Applicative
 import Data.Char
@@ -55,3 +64,10 @@ notNullP (Parser p) = Parser f
 
 wsP :: Parser String
 wsP = spanP isSpace
+
+parse :: Parser a -> String -> a
+parse parser input = f $ runParser parser input
+  where f (Just b) = case b of
+          ([], c) -> c
+          (_:_, _) -> error "didn't parse all of input"
+        f Nothing = error "program failed"
